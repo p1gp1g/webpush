@@ -59,8 +59,7 @@ describe Webpush::Encryption do
 
     def generate_ecdh_key
       group = "prime256v1"
-      curve = OpenSSL::PKey::EC.new(group)
-      curve.generate_key
+      curve = OpenSSL::PKey::EC.generate(group)
       curve.public_key.to_bn.to_s(2)
     end
 

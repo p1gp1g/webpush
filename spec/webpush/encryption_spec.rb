@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'ece'
 
-describe Webpush::Encryption do
+describe LegacyWebpush::Encryption do
   describe "#encrypt" do
     let(:p256dh) do
       encode64(generate_ecdh_key)
@@ -10,7 +10,7 @@ describe Webpush::Encryption do
     let(:auth) { encode64(Random.new.bytes(16)) }
 
     it "returns ECDH encrypted cipher text, salt, and server_public_key" do
-      payload = Webpush::Encryption.encrypt("Hello World", p256dh, auth)
+      payload = LegacyWebpush::Encryption.encrypt("Hello World", p256dh, auth)
 
       encrypted = payload.fetch(:ciphertext)
 
@@ -25,18 +25,18 @@ describe Webpush::Encryption do
     end
 
     it 'returns error when message is blank' do
-      expect{Webpush::Encryption.encrypt(nil, p256dh, auth)}.to raise_error(ArgumentError)
-      expect{Webpush::Encryption.encrypt("", p256dh, auth)}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt(nil, p256dh, auth)}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt("", p256dh, auth)}.to raise_error(ArgumentError)
     end
 
     it 'returns error when p256dh is blank' do
-      expect{Webpush::Encryption.encrypt("Hello world", nil, auth)}.to raise_error(ArgumentError)
-      expect{Webpush::Encryption.encrypt("Hello world", "", auth)}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt("Hello world", nil, auth)}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt("Hello world", "", auth)}.to raise_error(ArgumentError)
     end
 
     it 'returns error when auth is blank' do
-      expect{Webpush::Encryption.encrypt("Hello world", p256dh, "")}.to raise_error(ArgumentError)
-      expect{Webpush::Encryption.encrypt("Hello world", p256dh, nil)}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt("Hello world", p256dh, "")}.to raise_error(ArgumentError)
+      expect{LegacyWebpush::Encryption.encrypt("Hello world", p256dh, nil)}.to raise_error(ArgumentError)
     end
 
     # Bug fix for https://github.com/zaru/webpush/issues/22
@@ -44,7 +44,7 @@ describe Webpush::Encryption do
       unpadded_p256dh = "BK74n-ZA6kfMDEuCFbQH1Y5T33p39PvnzNeuD5LqTs8cF-uaQFUHn_v5kwV6dYIIL4nFabxghQNF_vlnAXX7OiU"
       unpadded_auth = "1C1PBkJQsVwD9tkuLR1x5A"
 
-      payload = Webpush::Encryption.encrypt("Hello World", unpadded_p256dh, unpadded_auth)
+      payload = LegacyWebpush::Encryption.encrypt("Hello World", unpadded_p256dh, unpadded_auth)
       encrypted = payload.fetch(:ciphertext)
 
       decrypted_data = ECE.decrypt(encrypted,

@@ -4,14 +4,14 @@ require 'hkdf'
 require 'net/http'
 require 'json'
 
-require 'webpush/version'
-require 'webpush/errors'
-require 'webpush/vapid_key'
-require 'webpush/encryption'
-require 'webpush/request'
-require 'webpush/railtie' if defined?(Rails)
+require 'legacy-webpush/version'
+require 'legacy-webpush/errors'
+require 'legacy-webpush/vapid_key'
+require 'legacy-webpush/encryption'
+require 'legacy-webpush/request'
+require 'legacy-webpush/railtie' if defined?(Rails)
 
-module Webpush
+module LegacyWebpush
   class << self
     # Deliver the payload to the required endpoint given by the JavaScript
     # PushSubscription. Including an optional message requires p256dh and
@@ -36,7 +36,7 @@ module Webpush
           auth: auth
         }
       }
-      Webpush::Request.new(
+      LegacyWebpush::Request.new(
         message: message,
         subscription: subscription,
         vapid: vapid,
@@ -47,7 +47,7 @@ module Webpush
     # Generate a VapidKey instance to obtain base64 encoded public and private keys
     # suitable for VAPID protocol JSON web token signing
     #
-    # @return [Webpush::VapidKey] a new VapidKey instance
+    # @return [LegacyWebpush::VapidKey] a new VapidKey instance
     def generate_key
       VapidKey.new
     end

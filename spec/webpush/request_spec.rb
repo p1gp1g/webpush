@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Webpush::Request do
+describe LegacyWebpush::Request do
   describe '#headers' do
     let(:request) { build_request(vapid: vapid_options) }
 
@@ -10,7 +10,7 @@ describe Webpush::Request do
 
     describe 'from :message' do
       it 'inserts encryption headers for valid payload' do
-        allow(Webpush::Encryption).to receive(:encrypt).and_return(ciphertext: 'encrypted', server_public_key: 'server_public_key', salt: 'salt')
+        allow(LegacyWebpush::Encryption).to receive(:encrypt).and_return(ciphertext: 'encrypted', server_public_key: 'server_public_key', salt: 'salt')
         request = build_request(message: "Hello")
 
         expect(request.headers['Content-Encoding']).to eq("aesgcm")
@@ -28,7 +28,7 @@ describe Webpush::Request do
             auth: 'auth'
           }
         }
-        request = Webpush::Request.new(message: "", subscription: subscription, vapid: {}, **options)
+        request = LegacyWebpush::Request.new(message: "", subscription: subscription, vapid: {}, **options)
       end
 
       it 'inserts Authorization header when api_key present, and endpoint is for Chrome\'s non-standards-compliant GCM endpoints' do
@@ -97,14 +97,14 @@ describe Webpush::Request do
       }
       jwt_header_fields = { 'typ' => 'JWT' }
 
-      vapid_key = Webpush::VapidKey.from_keys(vapid_public_key, vapid_private_key)
+      vapid_key = LegacyWebpush::VapidKey.from_keys(vapid_public_key, vapid_private_key)
       expect(Time).to receive(:now).and_return(time)
-      expect(Webpush::VapidKey).to receive(:from_keys).with(vapid_public_key, vapid_private_key).and_return(vapid_key)
+      expect(LegacyWebpush::VapidKey).to receive(:from_keys).with(vapid_public_key, vapid_private_key).and_return(vapid_key)
       expect(JWT).to receive(:encode).with(jwt_payload, vapid_key.curve, 'ES256', jwt_header_fields).and_return('jwt.encoded.payload')
 
       request = build_request(vapid: vapid_options)
       headers = request.build_vapid_headers
-      # headers = Webpush::Request.headers({
+      # headers = LegacyWebpush::Request.headers({
       #   audience: 'https://fcm.googleapis.com',
       #   subject: 'mailto:sender@example.com',
       #   public_key: vapid_public_key,
@@ -116,8 +116,8 @@ describe Webpush::Request do
     end
 
     it 'supports PEM format' do
-      pem = Webpush::VapidKey.new.to_pem
-      expect(Webpush::VapidKey).to receive(:from_pem).with(pem).and_call_original
+      pem = LegacyWebpush::VapidKey.new.to_pem
+      expect(LegacyWebpush::VapidKey).to receive(:from_pem).with(pem).and_call_original
       request = build_request(vapid: { subject: "mailto:sender@example.com", pem: pem })
       request.build_vapid_headers
     end
@@ -125,7 +125,7 @@ describe Webpush::Request do
 
   describe '#body' do
     it 'extracts :ciphertext from the :payload argument' do
-      allow(Webpush::Encryption).to receive(:encrypt).and_return(ciphertext: 'encrypted')
+      allow(LegacyWebpush::Encryption).to receive(:encrypt).and_return(ciphertext: 'encrypted')
 
       request = build_request(message: 'Hello', vapid: vapid_options)
 
@@ -153,7 +153,7 @@ describe Webpush::Request do
         auth: 'auth'
       }
     }
-    Webpush::Request.new(message: "", subscription: subscription, vapid: vapid_options, **options)
+    LegacyWebpush::Request.new(message: "", subscription: subscription, vapid: vapid_options, **options)
   end
 
   def endpoint

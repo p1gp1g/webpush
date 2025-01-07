@@ -1,7 +1,7 @@
 require 'jwt'
 require 'base64'
 
-module Webpush
+module LegacyWebpush
   # It is temporary URL until supported by the GCM server.
   GCM_URL = 'https://android.googleapis.com/gcm/send'
   TEMP_GCM_URL = 'https://gcm-http.googleapis.com/gcm'
@@ -172,7 +172,7 @@ module Webpush
     end
 
     def trim_encode64(bin)
-      Webpush.encode64(bin).delete('=')
+      LegacyWebpush.encode64(bin).delete('=')
     end
   end
 end

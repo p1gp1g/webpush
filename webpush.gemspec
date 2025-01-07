@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'webpush/version'
+require 'legacy-webpush/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "webpush"
-  spec.version       = Webpush::VERSION
+  spec.name          = "legacy-webpush"
+  spec.version       = LegacyWebpush::VERSION
   spec.authors       = ["zaru@sakuraba"]
   spec.email         = ["zarutofu@gmail.com"]
 
